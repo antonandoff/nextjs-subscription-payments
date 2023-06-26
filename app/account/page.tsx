@@ -35,7 +35,7 @@ export default async function Account() {
   //   }).format((subscription?.prices?.unit_amount || 0) / 100);
 
 
-  console.log(subscription)
+  // console.log(subscription)
   const updateName = async (formData: FormData) => {
     'use server';
 

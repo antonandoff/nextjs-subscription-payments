@@ -1,3 +1,5 @@
+import { Metadata } from "next"
+
 export type Json =
   | string
   | number
@@ -5,6 +7,11 @@ export type Json =
   | null
   | { [key: string]: Json }
   | Json[]
+
+export interface StripeMetadata {
+    type?: string | null
+    account?: string | null
+}
 
 export interface Database {
   public: {
@@ -80,13 +87,14 @@ export interface Database {
           }
         ]
       }
+
       products: {
         Row: {
           active: boolean | null
           description: string | null
           id: string
           image: string | null
-          metadata: Json | null
+          metadata: StripeMetadata
           name: string | null
         }
         Insert: {
@@ -94,7 +102,7 @@ export interface Database {
           description?: string | null
           id: string
           image?: string | null
-          metadata?: Json | null
+          metadata?: StripeMetadata
           name?: string | null
         }
         Update: {
@@ -102,7 +110,7 @@ export interface Database {
           description?: string | null
           id?: string
           image?: string | null
-          metadata?: Json | null
+          metadata?: StripeMetadata
           name?: string | null
         }
         Relationships: []
@@ -213,6 +221,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      test: "type" | "account"
       pricing_plan_interval: "day" | "week" | "month" | "year"
       pricing_type: "one_time" | "recurring"
       subscription_status:

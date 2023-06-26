@@ -31,7 +31,7 @@ export default async function Subscriptions() {
 
   useEffect(()=>{
     if(router.isReady && router.query.server){
-      console.log(router.query.server)      
+      // console.log(router.query.server)      
     }
   }, [router.isReady])
 

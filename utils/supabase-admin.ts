@@ -177,9 +177,26 @@ const manageSubscriptionStatusChange = async (
     );
 };
 
+const retrieveServerAdmin = async (serverId: any ) => {
+  const { data, error } = await supabaseAdmin
+  .from('servers')
+  .select('credentials, url, session_id')
+  .eq('id', serverId)
+  .single();
+ 
+  // if (error) return {url: error, credentials:error, session_id:error };
+  
+  // sessionServerId = serverId;
+  // sessionCookie = data?.session_id;
+  // sessionUrl = data?.url;
+ 
+  return data;
+ }
+
 export {
   upsertProductRecord,
   upsertPriceRecord,
   createOrRetrieveCustomer,
-  manageSubscriptionStatusChange
+  manageSubscriptionStatusChange,
+  retrieveServerAdmin
 };

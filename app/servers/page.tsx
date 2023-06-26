@@ -1,18 +1,50 @@
 import {
   getSession,
-  getServers
+  getServers,
+  getUserDetails,
+  createServerRecord
 } from '@/app/supabase-server';
 import { redirect } from 'next/navigation';
+// import { useState } from 'react';
+import ServersForm from './ServerForm';
+import ServersList from './ServerList';
 
 export default async function Servers() {
-  const [session, servers] = await Promise.all([
+  const [session, servers, userDetails] = await Promise.all([
     getSession(),
-    getServers()
+    getServers(),
+    getUserDetails()
   ]);
+  // const [tabPage, setTabPage] = useState('list')
 
   const user = session?.user;
   if (!session) {
     return redirect('/signin');
+  }
+
+  const handleServerCreation = async (e: any) => {
+
+    e.preventDefault();
+    const data = {
+      created_by: userDetails?.id,
+      location: e.target.location.value,
+      version: e.target.version.value,
+      details: {
+        name: e.target.name.value,
+        avatar: e.target.avatar.value,
+        info: e.target.info.value
+      },
+      capacity: e.target.capacity.value,
+      url: e.target.url.value,
+      credentials: {
+        username: e.target.admin.value,
+        password: e.target.admin_pass.value
+      }
+    }
+    // Send the data to the server in JSON format.
+    // const JSONdata = JSON.stringify(data)
+
+    const x =  await createServerRecord(data);
   }
 
   return (
@@ -31,6 +63,9 @@ export default async function Servers() {
               <p>{data.id}</p>
             </>
           )}
+          
+          <ServersList servers={servers}/>
+          <ServersForm userDetails={userDetails}/>
         </div>
       </div>
      

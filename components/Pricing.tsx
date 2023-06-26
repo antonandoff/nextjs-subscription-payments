@@ -26,7 +26,7 @@ interface Props {
   session: Session | null;
   user: User | null | undefined;
   products: ProductWithPrices[];
-  subscription: SubscriptionWithProduct | null;
+  subscription: any | null;
 }
 
 type BillingInterval = 'lifetime' | 'year' | 'month';
@@ -203,11 +203,13 @@ export default function Pricing({
           </div>
         </div>
         <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
-          {products.map((product) => {
+          {products.map((product) => {        
             const price = product?.prices?.find(
               (price) => price.interval === billingInterval
             );
-            if (!price) return null;
+            if (!price) return null;  
+            // don't show add-ons, only the full products
+            if (product?.metadata?.type == 'add-on') return null    
             const priceString = new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: price.currency!,

@@ -117,3 +117,53 @@ export const getUsers = async () => {
   }
   return data ?? [];
 };
+
+export const getServerRecord = async (serverId: any) => {
+  const supabase = createServerSupabaseClient();
+  const {data, error} = await supabase
+  .from('servers')
+  .select('id, active, created_by, location, version, details, capacity, url, plans, add_ons, status, created_at, dns_address')
+  .eq('id', serverId)
+  
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+
+  return (data as any) || [];
+}
+
+export const createServerRecord = async (server: any) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('servers')
+  .insert(server)
+  .select('id')
+  .single()
+
+  if (error) {
+    console.log(`Server wasn't created: ${error}`);
+    throw error
+  } else {
+    console.log(`Server created: ${server.active}`);
+  }  
+
+  return (data as any) || [];
+};
+
+export const updateServerRecord = async (items: any, serverId:any) => {
+  const supabase = createServerSupabaseClient();
+  const {data, error} = await supabase
+  .from('servers')
+  .update(items)
+  .eq('id', serverId)
+  .select('id, plans')
+  
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+
+  return (data as any) || [];
+}
+
