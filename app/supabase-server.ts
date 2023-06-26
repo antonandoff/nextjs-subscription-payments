@@ -65,3 +65,55 @@ export const getActiveProductsWithPrices = async () => {
   }
   return data ?? [];
 };
+
+export const getServers= async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('servers')
+    .select('id, details, active, capacity, tenants(id, created_at, domain)')
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};
+
+export const getAccountManagers = async() => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('account_managers')
+    .select()
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+  // TODO: improve the typing here.
+  return data ?? [];
+}
+
+export const getTenants = async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('tenants')
+    .select()
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};
+
+export const getUsers = async () => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('users')
+    .select('*, subscriptions(*), tenants(*)')
+    .order('full_name', {ascending: true})
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+};

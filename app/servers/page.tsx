@@ -1,32 +1,19 @@
 import {
   getSession,
-  getUserDetails,
-  getSubscription
+  getServers
 } from '@/app/supabase-server';
-import Button from '@/components/ui/Button';
-import { Database } from '@/types_db';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
-import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ReactNode } from 'react';
 
-export default async function Subscriptions() {
-  const [session, userDetails, subscription] = await Promise.all([
+export default async function Servers() {
+  const [session, servers] = await Promise.all([
     getSession(),
-    getUserDetails(),
-    getSubscription()
+    getServers()
   ]);
 
   const user = session?.user;
   if (!session) {
     return redirect('/signin');
   }
-
-
-
-
 
   return (
     <section className="mb-32 bg-black">
@@ -38,6 +25,12 @@ export default async function Subscriptions() {
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
             Header 2
           </p>
+
+          {servers && servers.map((data:any, index:any)=>
+            <>
+              <p>{data.id}</p>
+            </>
+          )}
         </div>
       </div>
      

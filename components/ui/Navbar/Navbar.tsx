@@ -23,7 +23,7 @@ export default async function Navbar() {
             <Link href="/" className={s.logo} aria-label="Logo">
               <Logo />
             </Link>
-            <nav className="hidden ml-6 space-x-2 lg:block">
+            <nav className="hidden ml-12 space-x-2 lg:block">
               <Link href="/" className={s.link}>
                 Plans
               </Link>
@@ -45,14 +45,11 @@ export default async function Navbar() {
                 </Link>
 
                 <Link href="/managers" className={s.link}>
-                  Account managers
+                  Managers
                 </Link>
                 </>
               )}
 
-              <Link href="/" className={s.link}>
-                
-              </Link>
             </nav>
           </div>
           <div className="flex justify-end flex-1 space-x-8">
