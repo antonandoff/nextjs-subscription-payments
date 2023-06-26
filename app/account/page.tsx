@@ -26,14 +26,16 @@ export default async function Account() {
     return redirect('/signin');
   }
 
-  const subscriptionPrice =
-    subscription &&
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: subscription?.prices?.currency!,
-      minimumFractionDigits: 0
-    }).format((subscription?.prices?.unit_amount || 0) / 100);
+  // const subscriptionPrice =
+  //   subscription &&
+  //   new Intl.NumberFormat('en-US', {
+  //     style: 'currency',
+  //     currency: subscription?.prices?.currency!,
+  //     minimumFractionDigits: 0
+  //   }).format((subscription?.prices?.unit_amount || 0) / 100);
 
+
+  console.log(subscription)
   const updateName = async (formData: FormData) => {
     'use server';
 
@@ -68,32 +70,14 @@ export default async function Account() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Account
+            Account 
           </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
             We partnered with Stripe for a simplified billing.
           </p>
         </div>
       </div>
-      <div className="p-4">
-        <Card
-          title="Your Plan"
-          description={
-            subscription
-              ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
-              : 'You are not currently subscribed to any plan.'
-          }
-          footer={<ManageSubscriptionButton session={session} />}
-        >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            {subscription ? (
-              `${subscriptionPrice}/${subscription?.prices?.interval}`
-            ) : (
-              <Link href="/">Choose your plan</Link>
-            )}
-          </div>
-        </Card>
-        <Card
+      <Card
           title="Your Name"
           description="Please enter your full name, or a display name you are comfortable with."
           footer={
@@ -157,7 +141,31 @@ export default async function Account() {
             </form>
           </div>
         </Card>
+      {subscription && subscription.map((data:any, index:any)=>
+        <>
+             <div className="p-4">
+        <Card
+          title="Your Plan"
+          description={
+            data
+              ? `You are currently on the ${data?.prices?.products?.name} plan.`
+              : 'You are not currently subscribed to any plan.'
+          }
+          footer={<ManageSubscriptionButton session={session} />}
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            {subscription ? (
+              `${data?.prices?.interval}`
+            ) : (
+              <Link href="/">Choose your plan</Link>
+            )}
+          </div>
+        </Card>
+
       </div>
+        </>
+      )}
+ 
     </section>
   );
 }

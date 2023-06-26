@@ -25,13 +25,34 @@ export default async function Navbar() {
             </Link>
             <nav className="hidden ml-6 space-x-2 lg:block">
               <Link href="/" className={s.link}>
-                Pricing
+                Plans
               </Link>
-              {user && (
+              {user && (<>
                 <Link href="/account" className={s.link}>
-                  Account
+                  My account
                 </Link>
+
+                <Link href="/servers" className={s.link}>
+                  Servers
+                </Link>
+
+                <Link href="/tenants" className={s.link}>
+                  Tenants
+                </Link>
+
+                <Link href="/users" className={s.link}>
+                  Users
+                </Link>
+
+                <Link href="/managers" className={s.link}>
+                  Account managers
+                </Link>
+                </>
               )}
+
+              <Link href="/" className={s.link}>
+                
+              </Link>
             </nav>
           </div>
           <div className="flex justify-end flex-1 space-x-8">
