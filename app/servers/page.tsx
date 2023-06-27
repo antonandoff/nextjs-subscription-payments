@@ -10,13 +10,13 @@ import ServersForm from './ServerForm';
 import ServersList from './ServerList';
 
 export default async function Servers() {
-  const [session, servers, userDetails] = await Promise.all([
+  const [session, servers] = await Promise.all([
     getSession(),
-    getServers(),
-    getUserDetails()
+    getServers()
   ]);
   // const [tabPage, setTabPage] = useState('list')
 
+  const userDetails = await getUserDetails(session?.user.id)
   const user = session?.user;
   if (!session) {
     return redirect('/signin');
@@ -26,7 +26,7 @@ export default async function Servers() {
 
     e.preventDefault();
     const data = {
-      created_by: userDetails?.id,
+      created_by: session?.user?.id,
       location: e.target.location.value,
       version: e.target.version.value,
       details: {
@@ -48,7 +48,7 @@ export default async function Servers() {
   }
 
   return (
-    <section className="mb-32 bg-black">
+    <section className="mb-32 dark:bg-black bg-white">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">

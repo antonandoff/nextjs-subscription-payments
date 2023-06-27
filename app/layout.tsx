@@ -2,6 +2,7 @@ import SupabaseProvider from './supabase-provider';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
+import Providers from "./Providers"
 import 'styles/main.css';
 
 const meta = {
@@ -44,9 +45,11 @@ export default function RootLayout({
   // This will be populated with nested layouts or pages
   children
 }: PropsWithChildren) {
+  
   return (
     <html lang="en">
-      <body className="bg-black loading">
+      <body className="dark:bg-black bg-white loading">
+      <Providers>
         <SupabaseProvider>
           {/* @ts-expect-error */}
           <Navbar />
@@ -58,6 +61,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </SupabaseProvider>
+        </Providers>
       </body>
     </html>
   );
