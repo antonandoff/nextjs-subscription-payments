@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import TableEntry from './TableEntry';
 
 interface Props {
     servers: any | null
@@ -8,101 +9,86 @@ interface Props {
 
 export default function ServersList({servers}:Props) {
  
-  return (<section>
-    {/* <h4>Servers</h4>    */}
-          <div> 
-          {/* <h3 className='ml-5 font-bold text-gray-500 mt-10'>Servers list</h3> */}
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg mr-10 mb-10 text-sm text-gray-900 bg-gray-500 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:text-white dark:focus:ring-blue-500">
-              {/* <div className="flex justify-between items-center py-4 bg-white dark:bg-gray-800">
-                
-              </div> */}
-              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                      <tr>
-                          {/* <th scope="col" className="p-4">
-                              <div className="flex items-center">
-                                  <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                  <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
-                              </div>
-                          </th> */}
-                          <th scope="col" className="py-3 px-6 pl-10 text-left">
-                              Name
-                          </th>
-                          <th scope="col" className="py-3 px-6 text-center">
-                              Tenants
-                          </th>
-                          <th scope="col" className="py-3 px-6 text-center">
-                              Capacity
-                          </th>
-                          <th scope="col" className="py-3 px-6 text-center">
-                              Status
-                          </th>
-                          {/* <th scope="col" className="py-3 px-6">
-                              Created at
-                          </th> */}
-                          <th scope="col" className="py-3 px-6">
-                              Action
-                          </th>
-                      </tr>
-                  </thead>
-                  <tbody>
-      {servers && servers.map((data:any, index:any)=>
-            {
-                return (
-            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            {/* <td className="p-4 w-4">
-                <div className="flex items-center">
-                    <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
+    return (
+        <section className="mb-32 dark:bg-black bg-white">
+          <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
+            <div className="overflow-hidden rounded-lg bg-white dark:bg-black shadow dark:border dark:border-white">
+              <div className="px-4 py-5 sm:p-6">
+                <div className="sm:align-center sm:flex sm:flex-col">
+                  <div className="px-4 sm:px-6 lg:px-8">
+                    <div className="sm:flex sm:items-center">
+                      <div className="sm:flex-auto">
+                        <h1 className="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+                          Servers
+                        </h1>
+                        <p className="mt-2 text-sm text-gray-700 dark:text-white">
+                          A list of all the servers in your account including their
+                          name, title, email and role.
+                        </p>
+                      </div>
+                      <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                        <button
+                          type="button"
+                          className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                          Add server
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-8 flow-root">
+                      <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full py-2 align-middle">
+                          <table className="min-w-full border-separate border-spacing-0">
+                            <thead className="">
+                              <tr className="">
+                                <th
+                                  scope="col"
+                                  className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                                >
+                                  Name
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+                                >
+                                  Tenants
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
+                                >
+                                  Capacity
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-center text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                                >
+                                  Status
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
+                                >
+                                  <span className="sr-only">Edit</span>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {servers && servers.map((data: any, index: any) => (
+                                  <>
+                                    <TableEntry data={data} />
+                                  </>
+                                ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </td> */}
-            <th scope="row" className="flex items-center py-4 px-6 text-gray-900 whitespace-nowrap dark:text-white">
-                {/* <img className="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image"> */}
-                <div className="pl-3">
-                    <div className="text-base font-semibold">{data?.details?.name}</div>
-                    <div className="font-normal text-gray-500">{data?.url}</div>
-                </div>  
-            </th>
-            <td className="py-4 px-6 text-center">
-                {data?.tenants?.length}
-            </td>
-            <td className="py-4 px-6 text-center">
-            {data?.capacity}
-            </td>
-            <td className="py-4 px-6 items-center">
-                <div className="flex items-center" style={{margin: 'auto', width: 'fit-content'}}>
-                    {data?.active ? 
-                        <><div className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div> Active</> 
-                        : <><div className="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></div> Disabled</> 
-                    }
-                </div>
-            </td>
-            {/* <td className="py-4 px-6">
-            {data.created_at}
-            </td> */}
-            <td className="py-4 px-6">
-                {/* <!-- Modal toggle --> */}
-                {/* <a href="#" type="button" data-modal-toggle="editUserModal" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Details</a> */}
-                <Link href={"/server/" + data.id}>
-                    <div data-modal-toggle="editUserModal" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Details</div>                  
-                </Link>
-            </td>
-            </tr>)
-            }
-            )}
-            </tbody>
-            </table>
+              </div>
             </div>
-
-
-      {/* <Card
-      key={data.id}
-      title= {data?.details?.name}
-    > 
-    URL: {data?.url} <br />
-    Capacity: {data?.capacity}
-
-    </Card>)}   */}
-    </div>
-  </section>)
+          </div>{' '}
+        </section>
+      );
 }

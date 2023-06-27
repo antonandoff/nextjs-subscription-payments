@@ -18,9 +18,8 @@ import { ReactNode } from 'react';
 
 export default async function Subscriptions() {
   const router = useRouter();
-  const [session, userDetails, subscription] = await Promise.all([
+  const [session, subscription] = await Promise.all([
     getSession(),
-    getUserDetails(),
     getSubscription()
   ]);
 
