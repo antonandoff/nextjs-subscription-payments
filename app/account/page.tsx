@@ -13,12 +13,17 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
+
+
+
 export default async function Account() {
-  const [session, userDetails, subscription] = await Promise.all([
+  const [session, subscription] = await Promise.all([
     getSession(),
-    getUserDetails(),
     getSubscription()
   ]);
+
+
+  // console.log(session?.user.id)
 
   const user = session?.user;
 
@@ -26,14 +31,31 @@ export default async function Account() {
     return redirect('/signin');
   }
 
-  // const subscriptionPrice =
-  //   subscription &&
-  //   new Intl.NumberFormat('en-US', {
-  //     style: 'currency',
-  //     currency: subscription?.prices?.currency!,
-  //     minimumFractionDigits: 0
-  //   }).format((subscription?.prices?.unit_amount || 0) / 100);
+  async function getUserInfo (user:any) {
+    'use server';
+    const supabase = createServerActionClient<Database>({ cookies });
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user?.id)
+      .single()
+    if (error) {
+      console.log(error);
+    }
+  
+    return data;
+  }
 
+  // const userInfo = await getUserInfo(user)
+  const userInfo = await getUserDetails(user?.id)
+
+  const subscriptionPrice = (data:any) =>{
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: data?.prices?.currency!,
+      minimumFractionDigits: 0
+    }).format((data?.prices?.unit_amount || 0) / 100);
+  }
 
   // console.log(subscription)
   const updateName = async (formData: FormData) => {
@@ -43,7 +65,7 @@ export default async function Account() {
     const supabase = createServerActionClient<Database>({ cookies });
     const session = await getSession();
     const user = session?.user;
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('users')
       .update({ full_name: newName })
       .eq('id', user?.id);
@@ -64,6 +86,8 @@ export default async function Account() {
     }
     revalidatePath('/account');
   };
+
+
 
   return (
     <section className="mb-32 bg-black">
@@ -87,7 +111,6 @@ export default async function Account() {
                 variant="slim"
                 type="submit"
                 form="nameForm"
-                disabled={true}
               >
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Name
@@ -101,7 +124,7 @@ export default async function Account() {
                 type="text"
                 name="name"
                 className="w-1/2 p-3 rounded-md bg-zinc-800"
-                defaultValue={userDetails?.full_name ?? ''}
+                defaultValue={userInfo?.full_name ?? ''}
                 placeholder="Your name"
                 maxLength={64}
               />
@@ -120,9 +143,8 @@ export default async function Account() {
                 variant="slim"
                 type="submit"
                 form="emailForm"
-                disabled={true}
+                // disabled={true}
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Email
               </Button>
             </div>
@@ -143,7 +165,7 @@ export default async function Account() {
         </Card>
       {subscription && subscription.map((data:any, index:any)=>
         <>
-             <div className="p-4">
+          <div className="p-4">
         <Card
           title="Your Plan"
           description={
@@ -155,7 +177,7 @@ export default async function Account() {
         >
           <div className="mt-8 mb-4 text-xl font-semibold">
             {subscription ? (
-              `${data?.prices?.interval}`
+              `${subscriptionPrice(data)}/${data?.prices?.interval}`
             ) : (
               <Link href="/">Choose your plan</Link>
             )}

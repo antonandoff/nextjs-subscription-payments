@@ -20,12 +20,14 @@ export async function getSession() {
   }
 }
 
-export async function getUserDetails() {
+export async function getUserDetails(id:any) {
   const supabase = createServerSupabaseClient();
   try {
     const { data: userDetails } = await supabase
+    
       .from('users')
       .select('*')
+      .eq('id', id)
       .single();
     return userDetails;
   } catch (error) {
