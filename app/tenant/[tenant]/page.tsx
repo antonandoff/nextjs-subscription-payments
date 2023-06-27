@@ -24,6 +24,5 @@ export default function Page({ params }: { params: { tenant: string } }) {
       </div>
     </div>
   </section>
-
   )
 }

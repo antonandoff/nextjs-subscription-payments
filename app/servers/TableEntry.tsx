@@ -40,7 +40,7 @@ export default function TableEntry({ data }: Props) {
         </div>
       </td>
       <td className="relative whitespace-nowrap border-b border-gray-200 py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8">
-        <Link href={'/serveer/' + data.id}>
+        <Link href={'/server/' + data.id}>
           <button
             type="button"
             data-modal-toggle="editUserModal"
