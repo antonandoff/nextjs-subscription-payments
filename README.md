@@ -1,4 +1,4 @@
-# Next.js Subscription Payments Starter
+# Vodia networks MSP portal
 
 The all-in-one starter kit for high-performance SaaS applications.
 

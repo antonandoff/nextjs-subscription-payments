@@ -68,6 +68,17 @@ export const getActiveProductsWithPrices = async () => {
   return data ?? [];
 };
 
+export const getPricingTable = async() => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('prices').select()
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+}
+
 export const getServers= async () => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
