@@ -11,6 +11,8 @@
     "generate-types": "npx supabase gen types typescript --project-id YOUR_PROJECT_ID --schema public > types_db.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
+    "@heroicons/react": "^2.0.18",
     "@stripe/stripe-js": "^1.53.0",
     "@supabase/auth-helpers-nextjs": "^0.7.0",
     "@supabase/auth-ui-react": "^0.4.2",
@@ -19,6 +21,7 @@
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
     "clsx": "^1.2.1",
+    "headlessui": "^0.0.0",
     "next": "13.4.3",
     "random-username-generator": "^1.0.4",
     "react": "^18.2.0",

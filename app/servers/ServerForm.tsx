@@ -1,7 +1,5 @@
-'use client';
-
 import { hashAndDigestPassword } from '@/utils/pbx'
-import Plan from 'components/Plan';
+import Plan from '@/components/plan/Plan';
 import AddOn from 'components/AddOn';
 import { useState, useEffect } from 'react';
 import Router from 'next/router'
@@ -12,7 +10,7 @@ import {
 
 interface Props {
   id?: any
-  userDetails: any | null
+  userDetails?: any | null
 }
 
 interface Form {
@@ -254,7 +252,7 @@ export default function ServersForm({id, userDetails}: Props) {
   return (<>
    <div className='mr-10 mb-10'>
     {/* <h3 className='ml-5 font-bold text-gray-500'>Server creation form</h3> */}
-      <div className="w-full p-10 text-sm text-gray-900 bg-white rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500">       
+      <div className="">       
         <form onSubmit={handleServerCreation} className="">
           
           {/* Server details section */}
@@ -344,8 +342,8 @@ export default function ServersForm({id, userDetails}: Props) {
           {/* Plans section */}
           {mode == 'new' &&
             <div className="grid gap-6 mb-6 md:grid-cols-3">
-{/* 
-              <Plan id={1} addPlanToServer={addPlanToServer} removePlanFromServer={removePlanFromServer}/>
+
+              {/* <Plan id={1} addPlanToServer={addPlanToServer} removePlanFromServer={removePlanFromServer}/>
               <Plan id={2} addPlanToServer={addPlanToServer} removePlanFromServer={removePlanFromServer}/>
               <Plan id={3} addPlanToServer={addPlanToServer} removePlanFromServer={removePlanFromServer}/>                     */}
 
