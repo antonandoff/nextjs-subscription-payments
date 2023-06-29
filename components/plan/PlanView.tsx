@@ -7,33 +7,35 @@ interface Props {
   addPlanToServer?: any;
   removePlanFromServer?: any;
   features: any;
+  plan: any;
 }
 
 export default function PlanView(props: Props) {
   const data = props.data;
   const features = props.features;
+  const plan = props.plan;
   return (
     <div className="dark:text-white">
       <div
-        key={data.id}
+        key={data?.id}
         className={classNames(
           data?.mostPopular ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200',
-          'rounded-l p-8'
+          'rounded p-8'
         )}
       >
         <h3
-          id={data.id}
+          id={data?.id}
           className={classNames(
-            data.mostPopular
-              ? 'text-indigo-600 dark:text-white'
-              : 'text-gray-900 dark:text-white',
-            'text-lg font-semibold leading-8'
+            data?.mostPopular
+              ? 'text-indigo-600 '
+              : 'text-gray-900',
+            'text-lg font-semibold leading-8 '
           )}
         >
-          {data.name}
+          {plan?.name}
         </h3>
         <p className="mt-4 text-sm leading-6 text-gray-600 dark:text-white">
-          {data.description}
+          {data?.description}
         </p>
         <p className="mt-6 flex items-baseline gap-x-1">
           <span className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -41,10 +43,10 @@ export default function PlanView(props: Props) {
           </span>
         </p>
         <a
-          href={data.href}
-          aria-describedby={data.id}
+          href={data?.href}
+          aria-describedby={data?.id}
           className={classNames(
-            data.mostPopular
+            data?.mostPopular
               ? 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'
               : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 dark:text-white',
             'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'

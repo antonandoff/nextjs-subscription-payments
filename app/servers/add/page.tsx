@@ -9,6 +9,8 @@ import Navbar from '@/components/ui/Navbar';
 import Plan from '@/components/plan/Plan';
 import PlanNew from '@/components/PlanNew'
 
+import Form from './Form'
+
 const tiers = [
   {
     name: 'Hobby',
@@ -42,23 +44,7 @@ const tiers = [
       'Marketing automations',
     ],
     mostPopular: true,
-  },
-  {
-    name: 'Enterprise',
-    id: 'tier-enterprise',
-    href: '#',
-    price: { monthly: '$90', annually: '$864' },
-    description: 'Dedicated support and infrastructure for your company.',
-    features: [
-      'Unlimited products',
-      'Unlimited subscribers',
-      'Advanced analytics',
-      '1-hour, dedicated support response time',
-      'Marketing automations',
-      'Custom reporting tools',
-    ],
-    mostPopular: false,
-  },
+  }
 ]
 
 export default async function Servers() {
@@ -84,11 +70,12 @@ export default async function Servers() {
 
   return (<> 
     <h1>Add server page</h1>  
-    <div className="grid gap-6 mb-6 md:grid-cols-3">
+    {/* <div className="grid gap-6 mb-6 md:grid-cols-3">
     {tiers && tiers.map((data:any) => (
       <Plan data={data} addPlanToServer={addPlanToServer} removePlanFromServer={removePlanFromServer} />
     ))} 
-    </div>
+    </div> */}
+    <Form />
     </>
   );
 }
