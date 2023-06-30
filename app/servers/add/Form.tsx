@@ -1,6 +1,7 @@
 'use client';
 
 import Plan from '@/components/plan/Plan';
+import AddOn from '@/components/addon/AddOn'
 import Input from '@/components/ui/Input';
 import { useState } from 'react';
 
@@ -142,8 +143,9 @@ export default function Form() {
           </span>
         </div>
       </div>
-
-
+      <div className="px-8 py-5 sm:p-10">
+          <AddOn />
+          </div>
       <div className="relative mt-10">
         <div className="absolute inset-0 flex items-center" aria-hidden="true">
           <div className="w-full border-t border-gray-300"></div>

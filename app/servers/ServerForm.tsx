@@ -1,6 +1,6 @@
 import { hashAndDigestPassword } from '@/utils/pbx'
 import Plan from '@/components/plan/Plan';
-import AddOn from 'components/AddOn';
+import AddOn from '@/components/addon/AddOn';
 import { useState, useEffect } from 'react';
 import Router from 'next/router'
 import {
