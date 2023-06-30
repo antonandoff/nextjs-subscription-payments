@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { tenantDataFunction, serverDataFunction, subscriptionDataFunction } from './tenantFunction'
 // import Layout from './layout';
 // import Modal from 'react-modal';
-// import Invoices from '@/components/Invoices';
+import Invoices from '@/components/invoices/Invoices';
 
 interface Props {
  id: any
@@ -97,7 +97,6 @@ export default function TenantModalPage(props:Props) {
           <table className="w-full text-sm text-gray-900 bg-gray-500 rounded-lg  focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ">
                 <tbody>
                 {tenantData && tenantData[0]?.plan?.features?.map((data:any, index:any) => {
-                    console.log(data)
                     if(data.input !== 'checkbox') {
                       return <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td className="py-2 px-3 text-left">
@@ -143,4 +142,13 @@ export default function TenantModalPage(props:Props) {
             </table>
 </div>
 </div>
-</div></>) }
+</div>
+{(subscriptionData[0] && (subscriptionData[0].id !== null)) ? <div>
+        <Invoices id={subscriptionData[0].id} />
+      </div> 
+      : 
+      
+      <div>There's an issue fetching inovices for this tenant</div>      
+      }
+
+</>) }
