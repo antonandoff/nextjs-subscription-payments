@@ -12,6 +12,7 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
+import Input from '@/components/ui/Input'
 
 
 export default async function Account() {
@@ -118,14 +119,13 @@ export default async function Account() {
         >
           <div className="mt-8 mb-4 text-xl font-semibold">
             <form id="nameForm" action={updateName}>
-              <input
+              <Input              
                 type="text"
-                name="name"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                name="name"    
+                label="Name"        
                 defaultValue={userInfo?.full_name ?? ''}
                 placeholder="Your name"
-                maxLength={64}
-              />
+                maxLength={64} />              
             </form>
           </div>
         </Card>
@@ -150,7 +150,7 @@ export default async function Account() {
         >
           <div className="mt-8 mb-4 text-xl font-semibold">
             <form id="emailForm" action={updateEmail}>
-              <input
+              <Input 
                 type="text"
                 name="email"
                 className="w-1/2 p-3 rounded-md bg-zinc-800"

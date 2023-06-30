@@ -98,7 +98,7 @@ export default function PlanEdit(props: Props) {
         >
           Buy plan
         </a>
-        <table>
+        <table className='w-full'>
         <tbody
           role="list"
           className="mt-8 space-y-3 text-sm leading-6 text-gray-600 dark:text-white"
@@ -115,7 +115,7 @@ export default function PlanEdit(props: Props) {
                         name={data.name}
                         type={data.input}
                         defaultValue={data.value}
-                        className=""
+                        className="p-0"
                         checked={!!data.value}
                         onChange={(e) => handleFeatureChange(e, data.type)}
                       />
@@ -135,7 +135,7 @@ export default function PlanEdit(props: Props) {
                         type={data.input}
                         defaultValue={data.value}
                         onChange={(e) => handleFeatureChange(e, data.type)}
-                        className="w-full m-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-1"
+                        className="w-full m-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-0"
                         min={0}
                       />
                     </td>

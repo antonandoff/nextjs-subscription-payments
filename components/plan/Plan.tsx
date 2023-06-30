@@ -84,11 +84,10 @@ export default function Plan(props: Props) {
   const data = props.data;
   
   useEffect(() => {
+    setMode(data.view)
     if(plan && featuresSet)
       props.formSubmit(data.id, plan, featuresSet)
   },[plan, featuresSet])
-
-  
 
   const handleFeatureChange = (featureType: string, newValue: number) => {
     setFeaturesSet((prevFeaturesSet) =>
