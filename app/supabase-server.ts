@@ -180,3 +180,35 @@ export const updateServerRecord = async (items: any, serverId:any) => {
   return (data as any) || [];
 }
 
+
+export const getTenantById = async (id: any) => {
+  const supabase = createServerSupabaseClient();
+  const {data, error} = await supabase
+  .from('tenants')
+  .select('*')
+  .eq('id', id)
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+  // TODO: improve the typing here.
+
+  return data ?? [];
+}
+
+export const getSubscriptionById = async (id: any) => {
+  const supabase = createServerSupabaseClient();
+  const {data, error} = await supabase
+  .from('subscriptions')
+  .select('*')
+  .eq('id', id)
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+  // TODO: improve the typing here.
+
+  return data ?? [];
+}

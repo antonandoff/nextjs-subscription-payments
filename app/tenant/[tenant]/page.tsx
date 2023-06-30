@@ -1,3 +1,5 @@
+import Details from './Details'
+
 export default function Page({ params }: { params: { tenant: string } }) {
   // return <div>My Post: {params?.tenant}</div>
   return (
@@ -16,6 +18,8 @@ export default function Page({ params }: { params: { tenant: string } }) {
                     A list of all the tenants in your account including their
                     name, title, email and role.
                   </p>
+
+                  <Details id={params.tenant} />
                 </div>
               </div>
             </div>
