@@ -15,6 +15,7 @@ interface Props {
   data?: any;
   addPlanToServer?: any;
   removePlanFromServer?: any;
+  formSubmit?:any;
 }
 
 const set = [
@@ -81,6 +82,13 @@ export default function Plan(props: Props) {
   const [featuresSet, setFeaturesSet] = useState([...set]);
   const [plan, setPlan] = useState<Plan>()
   const data = props.data;
+  
+  useEffect(() => {
+    if(plan && featuresSet)
+      props.formSubmit(data.id, plan, featuresSet)
+  },[plan, featuresSet])
+
+  
 
   const handleFeatureChange = (featureType: string, newValue: number) => {
     setFeaturesSet((prevFeaturesSet) =>
@@ -103,8 +111,8 @@ export default function Plan(props: Props) {
   return (
     <>
       <div>
-        {mode == 'view' && <PlanView data={data} features={featuresSet} plan={plan} />}
-        {mode == 'edit' && <PlanEdit data={data} features={featuresSet} plan={plan} onFeatureChange={handleFeatureChange} onPlanChange={handlePlanChange}/>}
+        {mode == 'view' && <PlanView data={data} features={featuresSet} plan={plan} key={data.id} />}
+        {mode == 'edit' && <PlanEdit data={data} features={featuresSet} plan={plan} onFeatureChange={handleFeatureChange} onPlanChange={handlePlanChange} key={data.id}/>}
 
         <div className="mt-4 mb-16 h-9">
           <RadioGroup value={mode} onChange={setMode}

@@ -3,10 +3,15 @@
 
 import { useState } from 'react';
 import Plan from '@/components/plan/Plan'
-import { features } from 'process';
+
+interface Plan {
+  id: number;
+  name?: object;
+  features?: object
+}
 
 export default function Form() {
-  const [plans, setPlans] = useState([{ id: 1 }]);
+  const [plans, setPlans] = useState<Array<Plan>>([{ id: 1}]);
   const [nextPlanId, setNextPlanId] = useState(2);
 
   const addPlan = () => {
@@ -18,15 +23,14 @@ export default function Form() {
     setPlans((prevPlans) => prevPlans.filter((plan) => plan.id !== planId));
   };
 
-  // const handleSubmit = (event:any) => {
-  //   event.preventDefault();
 
-  //   console.log(event)
-  //   // Access the form data including the plans array
-  //   // ...
-
-  //   // Do something with the form data
-  // };
+  const updatePlans = (id:any, plan?:any, features?:any) => {
+    console.log(id)
+    setPlans((prevPlans) =>
+    prevPlans.map((prevPlan) =>
+      prevPlan.id === id ? { ...prevPlan, plan, features } : prevPlan
+    ));
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,25 +38,27 @@ export default function Form() {
     // Get form data
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData.entries());
+
+    console.log(plans)
   
     // Get plan values
-    const planValues = featuresSet.map((feature) => {
-      return {
-        name: feature.name,
-        value: feature.value,
-        input: feature.input,
-        type: feature.type,
-      };
-    });
+    // const planValues = featuresSet.map((feature) => {
+    //   return {
+    //     name: feature.name,
+    //     value: feature.value,
+    //     input: feature.input,
+    //     type: feature.type,
+    //   };
+    // });
   
     // Combine form data and plan values
-    const allData = {
-      ...formValues,
-      plans: planValues,
-    };
+    // const allData = {
+    //   ...formValues,
+    //   plans: planValues,
+    // };
   
     // Log the data to the console or perform any other operations
-    console.log('Form Data:', allData);
+    // console.log('Form Data:', allData);
   };
   
   
@@ -67,7 +73,7 @@ export default function Form() {
       <div className="grid gap-6 mb-6 md:grid-cols-3">
       {plans.map((plan) => (
         <div key={plan.id}>
-          <Plan />
+          <Plan formSubmit={updatePlans} data={plan} />
           <button type="button" onClick={() => removePlan(plan.id)}>Remove Plan</button>
         </div>
       ))}

@@ -35,11 +35,11 @@ export default function PlanView(props: Props) {
           {plan?.name}
         </h3>
         <p className="mt-4 text-sm leading-6 text-gray-600 dark:text-white">
-          {data?.description}
+          {/* {data?.description} */}
         </p>
         <p className="mt-6 flex items-baseline gap-x-1">
           <span className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {data?.price['monthly']}
+            {/* {data?.price['monthly']} */}
           </span>
         </p>
         <a

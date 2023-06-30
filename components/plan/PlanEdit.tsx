@@ -56,7 +56,7 @@ export default function PlanEdit(props: Props) {
   return (
     <div className="dark:text-white">
       <div
-        key={data?.id}
+        key={data.id}
         className={classNames(
           data?.mostPopular ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200',
           'rounded p-8'
@@ -98,14 +98,15 @@ export default function PlanEdit(props: Props) {
         >
           Buy plan
         </a>
-        <ul
+        <table>
+        <tbody
           role="list"
           className="mt-8 space-y-3 text-sm leading-6 text-gray-600 dark:text-white"
         >
           {features.map((data: any, index: number) => {
             if (data.input == 'checkbox') {
               return (
-                <>
+                
                   <tr key={index} className="">
                     <td className="py-2 px-3 text-left">{data.name}</td>
 
@@ -120,11 +121,11 @@ export default function PlanEdit(props: Props) {
                       />
                     </td>
                   </tr>
-                </>
+                
               );
             } else {
               return (
-                <>
+             
                   <tr key={index} className="">
                     <td className="py-2 px-3 text-left">{data.name}</td>
 
@@ -139,11 +140,12 @@ export default function PlanEdit(props: Props) {
                       />
                     </td>
                   </tr>
-                </>
+             
               );
             }
           })}
-        </ul>
+        </tbody>
+        </table>
       </div>
     </div>
   );
