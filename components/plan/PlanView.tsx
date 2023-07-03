@@ -14,6 +14,7 @@ export default function PlanView(props: Props) {
   const data = props.data;
   const features = props.features;
   const plan = props.plan;
+
   return (
     <div className="dark:text-white">
       <div
@@ -29,13 +30,13 @@ export default function PlanView(props: Props) {
             data?.mostPopular
               ? 'text-indigo-600 '
               : 'text-gray-900',
-            'text-lg font-semibold leading-8 '
+            'text-lg font-semibold leading-8 dark:text-white'
           )}
         >
           {plan?.name}
         </h3>
         <p className="mt-4 text-sm leading-6 text-gray-600 dark:text-white">
-          {/* {data?.description} */}
+          ${(plan?.prices[0]?.unit_amount) / 100} / {plan?.prices[0]?.interval}
         </p>
         <p className="mt-6 flex items-baseline gap-x-1">
           <span className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">

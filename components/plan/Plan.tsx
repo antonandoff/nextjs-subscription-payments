@@ -78,15 +78,21 @@ interface Feature {
 
 
 export default function Plan(props: Props) {
-  const [mode, setMode] = useState('view');
+  const [mode, setMode] = useState('');
   const [featuresSet, setFeaturesSet] = useState([...set]);
   const [plan, setPlan] = useState<Plan>()
   const data = props.data;
   
   useEffect(() => {
-    setMode(data.view)
-    if(plan && featuresSet)
-      props.formSubmit(data.id, plan, featuresSet)
+    if(props.data){
+      setMode('user')
+      setFeaturesSet(props.data.features)
+      setPlan(props.data.plan)
+    } else {
+      setMode(data.view)
+      if(plan && featuresSet)
+        props.formSubmit(data.id, plan, featuresSet)
+    }
   },[plan, featuresSet])
 
   const handleFeatureChange = (featureType: string, newValue: number) => {
@@ -110,10 +116,10 @@ export default function Plan(props: Props) {
   return (
     <>
       <div>
-        {mode == 'view' && <PlanView data={data} features={featuresSet} plan={plan} key={data.id} />}
+        {(mode == 'user' || mode == 'view') && <PlanView data={data} features={featuresSet} plan={plan} key={data.id} />}
         {mode == 'edit' && <PlanEdit data={data} features={featuresSet} plan={plan} onFeatureChange={handleFeatureChange} onPlanChange={handlePlanChange} key={data.id}/>}
 
-        <div className="mt-4 mb-16 h-9">
+        {mode !== 'user' &&  <div className="mt-4 mb-16 h-9">
           <RadioGroup value={mode} onChange={setMode}
             className="grid grid-cols-2 gap-x-1 rounded p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-gray-200"
           >
@@ -138,7 +144,7 @@ export default function Plan(props: Props) {
               <span>Edit</span>
             </RadioGroup.Option>
           </RadioGroup>
-        </div>
+        </div> }
       </div>
     </>
   );

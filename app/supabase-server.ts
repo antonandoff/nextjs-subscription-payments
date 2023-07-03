@@ -181,6 +181,18 @@ export const updateServerRecord = async (items: any, serverId:any) => {
 }
 
 
+export const getServerRecordWithTenants = async () => {
+  const supabase = createServerSupabaseClient();
+  const {data, error} = await supabase
+  .from('servers')
+  .select('id, details, active, capacity, plans')
+
+  if (error) {
+    console.log(error.message);
+  }
+  return data ?? [];
+}
+
 export const getTenantById = async (id: any) => {
   const supabase = createServerSupabaseClient();
   const {data, error} = await supabase
