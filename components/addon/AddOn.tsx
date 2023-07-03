@@ -14,12 +14,11 @@ interface PriceWithProduct extends Price {
 }
 interface Props {
   data?: any;
-  id: any;
-  addPlanToServer: any;
-  removePlanFromServer: any;
+  id?: any;
+  manageAddOn?: any;
 }
 
-export default function Add({ id, addAddOnToServer }: any) {
+export default function AddOn(props: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [features, setFeatures] = useState<any[]>([]);
@@ -29,6 +28,8 @@ export default function Add({ id, addAddOnToServer }: any) {
   const [planList, setPlanList] = useState<any[]>([]);
   const [addOnAdded, setAddOnAdded] = useState(false);
   const [addOnClass, setAddOnClass] = useState('');
+
+  const id = props.id;
 
   interface Props {
     products: Product[];
@@ -63,7 +64,7 @@ export default function Add({ id, addAddOnToServer }: any) {
                 key={index}
                 className="block max-w-sm p-6 bg-white border rounded hover:bg-gray-100 dark:border-white dark:bg-black dark:text-white text:black"
                 onClick={(e)=>{
-                  addToTenantOption(item);
+                  props.manageAddOn(item);
                   (e.target as Element).classList.toggle('dark:border-white');
                   (e.target as Element).classList.toggle('border-indigo-600');
                 }}

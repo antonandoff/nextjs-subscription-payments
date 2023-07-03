@@ -4,6 +4,9 @@ import Plan from '@/components/plan/Plan';
 import AddOn from '@/components/addon/AddOn'
 import Input from '@/components/ui/Input';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createServer, hashPassword, authenticateWithPbx } from './helperFunctions'
+import { postData } from '@/utils/helpers';
 
 interface Plan {
   id: number;
@@ -12,9 +15,20 @@ interface Plan {
   view?: string;
 }
 
-export default function Form() {
+interface Props {
+  user?: any
+  data?: any
+}
+
+export default function Form(props: Props) {
   const [plans, setPlans] = useState<Array<Plan>>([{ id: 1, view: 'edit' }]);
+  const [addOns, setAddOns] = useState<any[]>([])
   const [nextPlanId, setNextPlanId] = useState(2);
+  const [validCredentials, setValidCredentials] = useState(false)
+
+  // need this for server creation part
+  const userId = props.user?.user;
+  const router = useRouter()
 
   const addPlan = () => {
     setPlans((prevPlans) => [...prevPlans, { id: nextPlanId, view: 'edit' }]);
@@ -34,34 +48,95 @@ export default function Form() {
     );
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const managetAddOn = (addOnData:any) => {
+    console.log(addOnData)
+    if(addOns.some((item:any)=> item.id == addOnData.id)){ 
+      const newAddOnList = addOns.filter((item:any) => item.id !== addOnData.id )
+      setAddOns(newAddOnList)
+    } else{
+      setAddOns(addOns => [...addOns, addOnData])
+    }
+  }
 
-    // Get form data
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData.entries());
-
-    console.log(plans);
-
-    // Get plan values
-    // const planValues = featuresSet.map((feature) => {
-    //   return {
-    //     name: feature.name,
-    //     value: feature.value,
-    //     input: feature.input,
-    //     type: feature.type,
-    //   };
-    // });
-
-    // Combine form data and plan values
-    // const allData = {
-    //   ...formValues,
-    //   plans: planValues,
-    // };
-
-    // Log the data to the console or perform any other operations
-    // console.log('Form Data:', allData);
+  const getValueById = (id: string): string | null => {
+    const element = document.getElementById(id) as HTMLInputElement | null;
+    return element ? element.value : null;
   };
+
+
+  const checkCredentials = async (e:any) => {
+    e.preventDefault();
+
+    const url = getValueById('url')
+    const admin = getValueById('admin')
+    const password = await hashPassword(getValueById('password'))
+    const data = {
+      url: url,
+      name: admin,
+      password: password
+    }
+    const req = await authenticateWithPbx(data) 
+    
+    if(req.length > 1) {
+      setValidCredentials(true)
+    } else {
+      console.log("try again")
+    }
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+  
+    // Convert FormData to a regular object
+    const e: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      e[key] = value.toString();
+    });
+   
+
+    const data = {
+      created_by: userId,
+        location: e.country,
+        version: '',
+        details: {
+          name: e.name,
+          avatar: '',
+          info: e.info,
+        },
+        capacity: e.capacity,
+        url: e.url,
+        credentials: {
+          username: e.admin,
+          password: e.password
+        },
+        plans: plans,
+        add_ons: addOns,
+        active: true,
+        dns_address: e.dns_zone
+    }
+
+    console.log(data)
+  
+    // if(props.id){
+    //   await updateServerRecord(form, props.id)
+    // } else {
+      const serverCreationRequest = await createServer(data);
+      console.log(serverCreationRequest)
+      if(serverCreationRequest.error){
+        console.log('😢 Server creation failed');    
+        return
+      } else {
+        if(serverCreationRequest.id)
+          router.push(`/server/${serverCreationRequest.id}`)
+      }
+    // }    
+    // Router.reload()
+  }
+  // };
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -77,12 +152,12 @@ export default function Form() {
       </div>
 
       <div className="px-8 py-5 sm:p-10">
-        <Input label="Country" />
-        <Input label="Server name" />
-        <Input label="Server description" />
-        <Input label="Support link" />
-        <Input label="Tenants capacity" />
-        <Input label="Primary DNS zone" />
+        <Input label="Country" name="country"/>
+        <Input label="Server name" name="name" />
+        <Input label="Server description" name="info"/>
+        <Input label="Support link" name="support"/>
+        <Input label="Tenants capacity" name="capacity" type="number"/>
+        <Input label="Primary DNS zone" name="dns_zone"/>
       </div>
       <div className="relative mt-10">
         <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -97,9 +172,11 @@ export default function Form() {
 
       <div className="px-8 py-5 sm:p-10">
 
-      <Input label="Server URL" name="" />
-      <Input label="Admin username" name="" />
-      <Input label="Admin password" name="" />
+      <Input label="Server URL" name="url" type="url" id="url" />
+      <Input label="Admin username" name="admin" id="admin" />
+      <Input label="Admin password" name="password" type="password" id="password" />
+
+      <button onClick={(e)=>checkCredentials(e)}>Test</button>
       </div>
 
 
@@ -144,7 +221,7 @@ export default function Form() {
         </div>
       </div>
       <div className="px-8 py-5 sm:p-10">
-          <AddOn />
+          <AddOn manageAddOn={managetAddOn} />
           </div>
       <div className="relative mt-10">
         <div className="absolute inset-0 flex items-center" aria-hidden="true">
