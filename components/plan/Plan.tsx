@@ -3,9 +3,7 @@
 import PlanEdit from './PlanEdit';
 import PlanView from './PlanView';
 import { RadioGroup } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
-import {getActiveProductsWithPrices} from '@/app/supabase-server';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
@@ -17,6 +15,7 @@ interface Props {
   addPlanToServer?: any;
   removePlanFromServer?: any;
   formSubmit?:any;
+  mode?: any;
 }
 
 const set = [
@@ -86,17 +85,19 @@ export default function Plan(props: Props) {
   
   useEffect(() => {
     // check if it's the view mode, that has features and plan defined, or is it a creation
-    if(props.data && props.data.features && props.data.plan){
-      setMode('user')
+    if(props.data && props.data.features && props.data.plan){     
+      // don't force mode change unless it hasn't been set yet     
+      if(mode == '')
+        setMode(props.mode)
       setFeaturesSet(props.data.features)
       setPlan(props.data.plan)
     } else {
-      setMode(data.view)
+      if(mode == '')
+        setMode(data.view)
+
       if(plan && featuresSet)
         props.formSubmit(data.id, plan, featuresSet)
     }
-
-    // setFeaturesSet(set)
   },[plan, featuresSet])
 
   const handleFeatureChange = (featureType: string, newValue: number) => {

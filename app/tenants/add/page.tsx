@@ -35,7 +35,7 @@ export default async function Servers() {
                   server.plans.map((plan: any, index: any) => {     
                   return (
                     <>
-                      <Plan data={plan} server={server} />
+                      <Plan data={plan} server={server} mode={'user'}/>
                     </>
                   )})}
               </div>

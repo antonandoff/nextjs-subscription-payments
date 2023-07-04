@@ -53,6 +53,14 @@ export default function PlanEdit(props: Props) {
     }
   }
 
+  // prevent form submission when enter is pressed within the plan builder
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
+
   return (
     <div className="dark:text-white">
       <div
@@ -118,6 +126,7 @@ export default function PlanEdit(props: Props) {
                         className="p-0"
                         checked={!!data.value}
                         onChange={(e) => handleFeatureChange(e, data.type)}
+                        onKeyDown={handleKeyDown}
                       />
                     </td>
                   </tr>
@@ -135,6 +144,7 @@ export default function PlanEdit(props: Props) {
                         type={data.input}
                         defaultValue={data.value}
                         onChange={(e) => handleFeatureChange(e, data.type)}
+                        onKeyDown={handleKeyDown}
                         className="w-full m-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-0"
                         min={0}
                       />

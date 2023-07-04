@@ -67,6 +67,8 @@ export default function Form(props: Props) {
   const checkCredentials = async (e:any) => {
     e.preventDefault();
 
+    console.log(e)
+
     const url = getValueById('url')
     const admin = getValueById('admin')
     const password = await hashPassword(getValueById('password'))
@@ -86,7 +88,6 @@ export default function Form(props: Props) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
     const form = event.currentTarget;
     const formData = new FormData(form);
   
@@ -172,11 +173,11 @@ export default function Form(props: Props) {
 
       <div className="px-8 py-5 sm:p-10">
 
-      <Input label="Server URL" name="url" type="url" id="url" />
-      <Input label="Admin username" name="admin" id="admin" />
-      <Input label="Admin password" name="password" type="password" id="password" />
+        <Input label="Server URL" name="url" type="url" id="url" />
+        <Input label="Admin username" name="admin" id="admin" />
+        <Input label="Admin password" name="password" type="password" id="password" />
 
-      <button onClick={(e)=>checkCredentials(e)}>Test</button>
+        <button onKeyDown={(e:any)=>checkCredentials(e)}>Test</button>
       </div>
 
 
