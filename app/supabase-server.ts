@@ -202,7 +202,6 @@ export const getTenantById = async (id: any) => {
     console.log(error.message);
     throw error;
   }
-  // TODO: improve the typing here.
 
   return data ?? [];
 };
@@ -218,7 +217,6 @@ export const getSubscriptionById = async (id: any) => {
     console.log(error.message);
     throw error;
   }
-  // TODO: improve the typing here.
 
   return data ?? [];
 };
@@ -234,7 +232,36 @@ export const createTenantForCheckout = async (e: any) => {
     console.log(error.message);
     throw error;
   }
-  // TODO: improve the typing here.
 
   return data ?? [];
 };
+
+export const getTenantByStripeSessionId = async (id: any) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('tenants')
+  .select('*')
+  .eq('stripe_session_id', id)
+
+  if (error) {
+    console.log(error.message);
+    return error;
+  }
+
+  return data ?? [];
+}
+
+export const getSubscriptionByStripeSessionId = async (id: any) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('subscriptions')
+  .select('*')
+  .eq('stripe_session_id', id)
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+
+  return data ?? [];
+}

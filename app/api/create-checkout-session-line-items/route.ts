@@ -44,8 +44,8 @@ export async function POST(req: Request) {
           trial_from_plan: true,
           metadata
         },
-        success_url: `${getURL()}/tenant_create/{CHECKOUT_SESSION_ID}`,
-        cancel_url: `${getURL()}/`
+        success_url: `${getURL()}subscription/creation/{CHECKOUT_SESSION_ID}`,
+        cancel_url: `${getURL()}`
       });
       
       return new Response(JSON.stringify({ sessionId: session.id  }), {status:200});

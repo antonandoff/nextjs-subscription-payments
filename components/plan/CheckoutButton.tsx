@@ -86,6 +86,8 @@ export default function CheckoutButton(props: Props) {
         created_by: await getUser()
       });
 
+      console.log(tenantCreation[0])
+
       // console.log(user?.id);
 
       const stripe = await getStripe();
