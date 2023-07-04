@@ -1,4 +1,4 @@
-import { activePlans } from './planFunctions';
+import { activePlans } from './helperFunctions';
 import { Database } from '@/types_db';
 import { useState, useEffect } from 'react';
 

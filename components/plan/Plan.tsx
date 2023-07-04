@@ -13,6 +13,7 @@ function classNames(...classes: any) {
 
 interface Props {
   data?: any;
+  server?: any;
   addPlanToServer?: any;
   removePlanFromServer?: any;
   formSubmit?:any;
@@ -84,7 +85,8 @@ export default function Plan(props: Props) {
   const data = props.data;
   
   useEffect(() => {
-    if(props.data){
+    // check if it's the view mode, that has features and plan defined, or is it a creation
+    if(props.data && props.data.features && props.data.plan){
       setMode('user')
       setFeaturesSet(props.data.features)
       setPlan(props.data.plan)
@@ -93,6 +95,8 @@ export default function Plan(props: Props) {
       if(plan && featuresSet)
         props.formSubmit(data.id, plan, featuresSet)
     }
+
+    // setFeaturesSet(set)
   },[plan, featuresSet])
 
   const handleFeatureChange = (featureType: string, newValue: number) => {
@@ -116,7 +120,7 @@ export default function Plan(props: Props) {
   return (
     <>
       <div>
-        {(mode == 'user' || mode == 'view') && <PlanView data={data} features={featuresSet} plan={plan} key={data.id} />}
+        {(mode == 'user' || mode == 'view') && <PlanView data={data} server={props.server} features={featuresSet} plan={plan} key={data.id} />}
         {mode == 'edit' && <PlanEdit data={data} features={featuresSet} plan={plan} onFeatureChange={handleFeatureChange} onPlanChange={handlePlanChange} key={data.id}/>}
 
         {mode !== 'user' &&  <div className="mt-4 mb-16 h-9">

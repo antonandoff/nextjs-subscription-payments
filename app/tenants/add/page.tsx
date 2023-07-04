@@ -32,10 +32,10 @@ export default async function Servers() {
 
               <div className="grid gap-6 mb-6 md:grid-cols-3">
                 {server.plans &&
-                  server.plans.map((plan: any, index: any) => {                  
+                  server.plans.map((plan: any, index: any) => {     
                   return (
                     <>
-                      <Plan data={plan} />
+                      <Plan data={plan} server={server} />
                     </>
                   )})}
               </div>

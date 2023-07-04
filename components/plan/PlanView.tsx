@@ -1,3 +1,5 @@
+import CheckoutButton from "./CheckoutButton";
+
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
 }
@@ -8,12 +10,13 @@ interface Props {
   removePlanFromServer?: any;
   features: any;
   plan: any;
+  server?:any
 }
 
 export default function PlanView(props: Props) {
   const data = props.data;
   const features = props.features;
-  const plan = props.plan;
+  const plan = props.plan;  
 
   return (
     <div className="dark:text-white">
@@ -43,18 +46,7 @@ export default function PlanView(props: Props) {
             {/* {data?.price['monthly']} */}
           </span>
         </p>
-        <a
-          href={data?.href}
-          aria-describedby={data?.id}
-          className={classNames(
-            data?.mostPopular
-              ? 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'
-              : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 dark:text-white',
-            'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-          )}
-        >
-          Buy plan
-        </a>
+          <CheckoutButton data={data} plan={plan} features={features} server={props.server} />
         <ul
           role="list"
           className="mt-8 space-y-3 text-sm leading-6 text-gray-600 dark:text-white"
