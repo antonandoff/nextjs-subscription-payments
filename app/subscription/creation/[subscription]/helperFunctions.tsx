@@ -1,6 +1,6 @@
 'use server'
 
-import { getTenantByStripeSessionId, getSubscriptionByStripeSessionId, getServerRecord, getServerAdmin } from '@/app/supabase-server'
+import { getTenantByStripeSessionId, getSubscriptionByStripeSessionId, getServerRecord, getServerAdmin, setTenantSubscriptionId, setTenantAdminCredentials } from '@/app/supabase-server'
 import { hashAndDigestPassword } from 'utils/pbx'
 
 var sessionCookie = '';
@@ -75,7 +75,6 @@ const getSubsriptionListItems = async (subscription_id: any) => {
 }
 
 
-
 export async function connectToPbxAndCreateNewTenant (server:any, tenant:any, plan:any, addOn:any, subscription:any){
   const data = {
     domain: tenant.domain,
@@ -84,9 +83,11 @@ export async function connectToPbxAndCreateNewTenant (server:any, tenant:any, pl
     tenant: tenant.id
   }
 
-  // return (data)
-  const req = await createTenantRecord(data)
-  return req;
+  // old /api/pbx/tenant
+  const reqTenant = await createTenantRecord(data)
+  const reqAccount = await connectToPbxAndCreateAccounts(tenant, server, subscription)
+
+  return ({createTenant: reqTenant, createAccounts: reqAccount})
 }
 
 
@@ -194,26 +195,81 @@ export const connectToPbxAndCreateAccounts = async (tenant:any, server:any, subs
     // email: user?.email,
     // phone: user?.phone,
     ip_address: '',
-    display_name: '',
+    display_name: tenant.domain,
     country_code: '',
     subscription: subscription,
     tenant: tenant.id
   }
 
+  const req = await createAdminForTenant(data)
+  return req;
+}
+
+
+const createAdminForTenant = async (data:any) => {
+  const tenantName = data.domain.name + "." + data.domain.host;
+  
+  data.tenantName = tenantName;
+  
+  // get data from the db since we don't keep pass on the front
+  // serverId - id of the server from DB
+  const serverAdminDetails:any = await getServerAdmin(data.server);
+  // check if sessionId is still valid
+
+  // check if need to login again or just use the old session 
+  // sessionCookie from the local variable
+  // sessReq = await checkSessionIdValidity(sessionCookie);
+  
+   // reauthenticate if not
+   // url - url of PBX
+   // {username, password}
+   const authData = {
+    url: serverAdminDetails?.url,
+    name: serverAdminDetails?.credentials.username,
+    password: serverAdminDetails?.credentials.password
+  }
+
+  const authReq = await authenticateWithPbx(authData)       
+  const tenantSetting = await createTenantAdminUser(serverAdminDetails?.url, data)
+  
+
+
+  // return stuff for better debugging
+  return {data, tenantSetting}
+}
+
+
+const createTenantAdminUser = async (url:string, data:any) => {  
+  // let's use this basic library of random words to get us to the finish line
+  // will need to review and replace it with smth more sophisticated
+  var random_user_name = require('random-username-generator'); 
+  var name = random_user_name.generate();
+  var pass = random_user_name.generate() 
+
+  const configAPI = url + "/rest/domain/" + data.tenantName + "/config";
+  const configPayload = {
+    "admins": [
+      {
+          "name": name,
+          "email": data?.email || '',
+          "phone": data?.phone || '',
+          "password": pass, 
+          "adr": data?.ip_addresses || ''
+      }
+   ],
+   "display": data?.display_name || '',
+   "country_code": data?.country_code || ''
+  }
+
+  //if it goes through save credentials to the DB
+  const tenantAdmin = await setTenantAdminCredentials(name, pass, data.tenant)
+  const tenantSubscription = await setTenantSubscriptionId(data.tenant, data.subscription.id)
+   
   try {
-    const req = await fetch('/api/pbx/tenant_config', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    const res = await req.json()
-
-  } catch (error) {
-    console.log(error);
-  } finally { 
-    console.log('success')
+    // send the request to create domain
+    const configReq = await axiosRequest('post', configAPI, JSON.stringify(configPayload));
+    return {message: 'ok', payload: configPayload, conf: configReq, ta: data}
+  } catch (e) {
+    return {message: e, configAPI, configPayload}
   }
 }

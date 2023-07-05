@@ -115,6 +115,38 @@ export const getTenants = async () => {
   return data ?? [];
 };
 
+export const setTenantSubscriptionId = async (tenant_id:any, subscription_id:any) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('tenants')
+  .update({ subscription_id: subscription_id })
+  .eq('id', tenant_id)
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+  // TODO: improve the typing here.
+
+  return data ?? [];
+}
+
+export const setTenantAdminCredentials = async (username: string, password: string, tenant: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('tenants')
+  .update({ credentials: {username: username, password: password} })
+  .eq('id', tenant)
+
+  if (error) {
+    console.log(error.message);
+    throw error;
+  }
+  // TODO: improve the typing here.
+
+  return data ?? [];
+}
+
 export const getUsers = async () => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
