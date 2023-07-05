@@ -19,7 +19,7 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
 }
 
-function formatDate(dateString:any) {
+function formatDate(dateString: any) {
   const date = new Date(dateString);
   const formattedDate = date.toLocaleString('en-US', {
     year: 'numeric',
@@ -36,7 +36,6 @@ export default async function Account() {
     getSession(),
     getTenants()
   ]);
-
 
   // console.log(session?.user.id)
 
@@ -104,67 +103,52 @@ export default async function Account() {
 
   return (
     <section className="mb-32 dark:bg-black dark:text-white bg-white text-black">
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
-        <div className="sm:align-center sm:flex sm:flex-col"></div>
+      <div className="sm:flex-auto">
+        <h1 className="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          Account
+        </h1>
+        <p className="mt-2 text-sm text-gray-700 dark:text-white">
+          Your personal details and list of subscriptions
+        </p>
       </div>
-      <Card
-        title="Your Name"
-        description="Please enter your full name, or a display name you are comfortable with."
-        footer={
-          <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-            <p className="pb-4 sm:pb-0">64 characters maximum</p>
-            <Button variant="slim" type="submit" form="nameForm">
-              {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-              Update Name
-            </Button>
-          </div>
-        }
-      >
-        <div className="mt-8 mb-4 text-xl font-semibold">
-          <form id="nameForm" action={updateName}>
-            <Input
-              type="text"
-              name="name"
-              label="Name"
-              defaultValue={userInfo?.full_name ?? ''}
-              placeholder="Your name"
-              maxLength={64}
-            />
-          </form>
+
+      <div className="mt-8 flow-root">
+        <div className="">
+          <Input
+            type="text"
+            name="email"
+            label="Email"      
+            defaultValue={user ? user.email : ''}
+            placeholder="Your email"
+            maxLength={64}
+          />
+
+          <Input
+            type="text"
+            name="name"
+            label="Name"
+            defaultValue={userInfo?.full_name ?? ''}
+            placeholder="Your name"
+            maxLength={64}
+          />
         </div>
-      </Card>
-      <Card
-        title="Your Email"
-        description="Please enter the email address you want to use to login."
-        footer={
-          <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-            <p className="pb-4 sm:pb-0">
-              We will email you to verify the change.
-            </p>
-            <Button
-              variant="slim"
-              type="submit"
-              form="emailForm"
-              // disabled={true}
+
+        <button
+              type="button"
+              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Update Email
-            </Button>
-          </div>
-        }
-      >
-        <div className="mt-8 mb-4 text-xl font-semibold">
-          <form id="emailForm" action={updateEmail}>
-            <Input
-              type="text"
-              name="email"
-              className="w-1/2 p-3 rounded-md bg-zinc-800"
-              defaultValue={user ? user.email : ''}
-              placeholder="Your email"
-              maxLength={64}
-            />
-          </form>
+              Save
+            </button>
+      </div>
+
+      <div className="relative mt-20 mb-20 ml-[-100px] mr-[-100px]">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-gray-300"></div>
         </div>
-      </Card>
+        <div className="relative flex justify-center">
+          <span className="bg-white px-2 text-sm text-gray-500"></span>
+        </div>
+      </div>
 
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
@@ -192,57 +176,64 @@ export default async function Account() {
               <tbody>
                 {subscription &&
                   subscription.map((data: any, index: any) => {
-                  console.log(data)
-                  return (
-                    <>
-                      <tr key={index}>
-                        <td
-                          className={classNames(
-                            index !== subscription.length - 1
-                              ? 'border-b border-gray-200'
-                              : '',
-                            'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8 dark:text-white'
-                          )}
-                        >
-                          {data?.domain.name}.{data?.domain.host}
-                        </td>
-                        <td
-                          className={classNames(
-                            index !== subscription.length - 1
-                              ? 'border-b border-gray-200'
-                              : '',
-                            'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
-                          )}
-                        >
-                          <div className="flex items-center">
-                                    <div className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div> Online
-                                </div>
-                        </td>
-                        <td
-                          className={classNames(
-                            index !== subscription.length - 1
-                              ? 'border-b border-gray-200'
-                              : '',
-                            'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
-                          )}
-                        >
-                          {formatDate(data.created_at)}
-                        </td>
-                        <td
-                          className={classNames(
-                            index !== subscription.length - 1
-                              ? 'border-b border-gray-200'
-                              : '',
-                            'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
-                          )}
-                        >
-                                  <Link href={"/tenant/" + data.id}>
-                                    <span data-modal-toggle="editUserModal" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Details</span>                  
-                                </Link>
-                        </td>
-                      </tr>
-                    </>
-                  )})}
+                    console.log(data);
+                    return (
+                      <>
+                        <tr key={index}>
+                          <td
+                            className={classNames(
+                              index !== subscription.length - 1
+                                ? 'border-b border-gray-200'
+                                : '',
+                              'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8 dark:text-white'
+                            )}
+                          >
+                            {data?.domain.name}.{data?.domain.host}
+                          </td>
+                          <td
+                            className={classNames(
+                              index !== subscription.length - 1
+                                ? 'border-b border-gray-200'
+                                : '',
+                              'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                            )}
+                          >
+                            <div className="flex items-center">
+                              <div className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>{' '}
+                              Online
+                            </div>
+                          </td>
+                          <td
+                            className={classNames(
+                              index !== subscription.length - 1
+                                ? 'border-b border-gray-200'
+                                : '',
+                              'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                            )}
+                          >
+                            {formatDate(data.created_at)}
+                          </td>
+                          <td
+                            className={classNames(
+                              index !== subscription.length - 1
+                                ? 'border-b border-gray-200'
+                                : '',
+                              'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
+                            )}
+                          >
+                            <Link href={'/tenant/' + data.id}>
+                              <span
+                                data-modal-toggle="editUserModal"
+                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                              >
+                                Details
+                              </span>
+                            </Link>
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
