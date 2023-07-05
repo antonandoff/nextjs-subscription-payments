@@ -19,7 +19,7 @@ export default async function Managers() {
     return redirect('/signin');
   }
 
-  console.log(managers)
+  // console.log(managers)
 
   return (<>
     <div className="sm:flex sm:items-center">

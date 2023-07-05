@@ -61,12 +61,14 @@ interface SubscriptionPrice {
 
 interface Plan {
   id: string;
+  plan:{
   active: boolean;
   name: string;
   description: string | null;
   image: string | null;
   metadata: Metadata;
   prices: SubscriptionPrice[];
+  }
 }
 
 interface Feature {

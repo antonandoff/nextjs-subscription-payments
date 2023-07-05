@@ -121,7 +121,7 @@ export default function TenantModalPage(props:Props) {
                   }})}
                 </tbody>
             </table>
-            {(tenantData[0]?.add_ons.length >= 1) && <p className='mt-5 text-lg text-gray-500 dark:text-gray-400'>Add-ons</p>}
+            {(tenantData[0]?.add_ons?.length >= 1) && <p className='mt-5 text-lg text-gray-500 dark:text-gray-400'>Add-ons</p>}
 
 
           <table className="w-full text-sm text-gray-900 bg-gray-500 rounded-lg  focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ">

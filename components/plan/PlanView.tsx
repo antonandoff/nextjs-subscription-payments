@@ -16,7 +16,13 @@ interface Props {
 export default function PlanView(props: Props) {
   const data = props.data;
   const features = props.features;
-  const plan = props.plan;  
+  const plan = props.plan;
+  
+  const checkoutData = {
+    id: plan.id,
+    plan: plan,
+    features: features
+  }
 
   return (
     <div className="dark:text-white">
@@ -46,7 +52,7 @@ export default function PlanView(props: Props) {
             {/* {data?.price['monthly']} */}
           </span>
         </p>
-          <CheckoutButton data={data} plan={plan} features={features} server={props.server} />
+          <CheckoutButton data={checkoutData} plan={props.plan} features={features} server={props.server} />
         <ul
           role="list"
           className="mt-8 space-y-3 text-sm leading-6 text-gray-600 dark:text-white"

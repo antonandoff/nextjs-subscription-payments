@@ -67,7 +67,7 @@ export default function CheckoutButton(props: Props) {
       }
 
       const res = await req.json();
-      console.log(res);
+      // console.log(res);
       // we can use sessionId to create a tenant, then when subscription is ready with the session Id matching session of a tenant
       // we can start the whole process of creation
 
@@ -82,11 +82,11 @@ export default function CheckoutButton(props: Props) {
         server: server.id,
         product: plan.id,
         // add_ons: addOns,
-        plan: plan,
+        plan: data,
         created_by: await getUser()
       });
 
-      console.log(tenantCreation[0])
+      // console.log(tenantCreation[0])
 
       // console.log(user?.id);
 

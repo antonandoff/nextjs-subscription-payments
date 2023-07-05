@@ -1,8 +1,9 @@
 'use server'
 
-import { getTenantByStripeSessionId, getSubscriptionByStripeSessionId, getServerRecord } from '@/app/supabase-server'
+import { getTenantByStripeSessionId, getSubscriptionByStripeSessionId, getServerRecord, getServerAdmin } from '@/app/supabase-server'
+import { hashAndDigestPassword } from 'utils/pbx'
 
-
+var sessionCookie = '';
 
 export async function getTenantDetails (stripe_id:any) {
   const req = await getTenantByStripeSessionId(stripe_id)
@@ -21,7 +22,7 @@ export async function beginTenantCreation (stripe_id: any) {
     const productId = tenant[0].product
     const tenantBaseSpecs = server[0].plans
     const productWithId = tenantBaseSpecs.filter((plan:any) => plan.id === productId)    
-    const subscriptionItems = await getSubsriptionListItems(subscription[0].id)
+    // const subscriptionItems = await getSubsriptionListItems(subscription[0].id)
     const planSpecs = productWithId[0].features;
     const addOnSpecs = tenant[0].add_ons;
   
@@ -32,18 +33,20 @@ export async function beginTenantCreation (stripe_id: any) {
     // })
 
     const data = {
-      server: server,
-      sub: subscription,
-      prop: productId,
-      prodId: productWithId,
-      subItem: subscriptionItems,
+      server: server[0],
+      tenant: tenant[0],
+      sub: subscription[0],
       plan: planSpecs,
-      addons: addOnSpecs
+      addons: addOnSpecs,
+      prop: productId,
+      // prodId: productWithId,
+      // subItem: subscriptionItems[0]            
     }
     
-    return data;
+    // return data;
 
-    // await connectToPbxAndCreateNewTenant(server[0], tenant[0], planSpecs, addOnSpecs, subscription[0])
+    const req = await connectToPbxAndCreateNewTenant(server[0], tenant[0], planSpecs, addOnSpecs, subscription[0])
+    return req;
   } else {
     console.log('ooops')
   }
@@ -73,7 +76,7 @@ const getSubsriptionListItems = async (subscription_id: any) => {
 
 
 
-const connectToPbxAndCreateNewTenant = async (server:any, tenant:any, plan:any, addOn:any, subscription:any) => {
+export async function connectToPbxAndCreateNewTenant (server:any, tenant:any, plan:any, addOn:any, subscription:any){
   const data = {
     domain: tenant.domain,
     server: server.id,
@@ -81,29 +84,102 @@ const connectToPbxAndCreateNewTenant = async (server:any, tenant:any, plan:any, 
     tenant: tenant.id
   }
 
-  // createTenantRecord(data)
-  try {
-    const req = await fetch('/api/pbx/tenant', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    const res = await req.json();
-    // console.log(res)
-
-    // setProgress(3)
-    connectToPbxAndCreateAccounts(tenant, server, subscription)
-  } catch (error) {
-    console.log(error);
-  } finally { 
-    console.log('success')
-  }
+  // return (data)
+  const req = await createTenantRecord(data)
+  return req;
 }
 
-const connectToPbxAndCreateAccounts = async (tenant:any, server:any, subscription:any) => {
+
+export const createTenantRecord = async (data:any) => {
+  var sessReq:any;
+
+  // tenantReq:any;
+
+  const tenantName = data.domain.name + "." + data.domain.host;  
+  data.tenantName = tenantName;
+  
+  const serverAdminDetails:any = await getServerAdmin(data.server);
+
+  // if(!sessReq)
+  const authData = {
+    url: serverAdminDetails?.url,
+    name: serverAdminDetails?.credentials.username,
+    password: serverAdminDetails?.credentials.password
+  }
+
+
+
+  const req = await authenticateWithPbx(authData)
+
+  
+   
+  const tenantReq = await createPbxTenant(serverAdminDetails?.url, data)
+
+  // const stuff = {
+  //     ses: sessReq,
+  //     auth: authReq,
+  //     tenant: tenantReq,
+  // }
+
+  // return {data, stuff}
+  return {authData, serverAdminDetails, req, tenantReq};
+}
+
+
+export async function  authenticateWithPbx (data:any) {  
+  const axios = require("axios");
+  axios.defaults.withCredentials = true;
+  // return data
+  // const crypto = require('crypto');
+  // const password = crypto.createHash('md5').update(data.password).digest('hex');
+  const vars = { name: 'auth', value: data.name + ' ' + data.password };
+  // return vars
+  const req = await axiosRequest('post', data.url + "/rest/system/session", JSON.stringify(vars))
+  // update sessionid on DB
+  // updateServersSessionId(req)
+  // update sessionId locally
+  sessionCookie = req;
+  
+  // signall 
+  return req;
+}
+
+
+export const axiosRequest = async (method:any, url:any, data:any) => {
+  const axios = require("axios");
+  const https = require("https");
+  const crypto = require('crypto')
+  const jsonHeaders = { 'Content-Type': 'application/json; charset=utf-8',  "Cookie": "session=" + sessionCookie}
+  const httpsAgent = new https.Agent({
+      maxVersion: "TLSv1.2",
+      minVersion: "TLSv1.1",
+      rejectUnauthorized: false,
+      secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+  });
+
+  // right way to set header cookies in axios
+  axios.defaults.headers.Cookie = "session=" + sessionCookie;
+
+  // make that request
+  const req = axios({ method: method, url: url, data: data, httpsAgent, headers: jsonHeaders });
+  const res = await req;
+
+  // return requests reply
+  return res.data;
+}
+
+export const createPbxTenant = async (url:string, data: any) => {
+  const domainAPI = url + "/rest/system/domains";
+  const domainPayload = [data.tenantName];
+
+  const req = await axiosRequest('post', domainAPI, JSON.stringify(domainPayload));
+  return req
+}
+
+
+
+export const connectToPbxAndCreateAccounts = async (tenant:any, server:any, subscription:any) => {
+
   console.log(tenant)
   console.log(server)
   console.log(subscription)
@@ -115,11 +191,11 @@ const connectToPbxAndCreateAccounts = async (tenant:any, server:any, subscriptio
     // user email
     // user phone
     // user country code
-    email: user?.email,
-    phone: user?.phone,
+    // email: user?.email,
+    // phone: user?.phone,
     ip_address: '',
     display_name: '',
-    country_code: '49',
+    country_code: '',
     subscription: subscription,
     tenant: tenant.id
   }
@@ -135,9 +211,6 @@ const connectToPbxAndCreateAccounts = async (tenant:any, server:any, subscriptio
 
     const res = await req.json()
 
-    // setProgress(4)
-
-    // finalStep()
   } catch (error) {
     console.log(error);
   } finally { 

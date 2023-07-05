@@ -163,6 +163,21 @@ export const createServerRecord = async (server: any) => {
   return (data as any) || [];
 };
 
+export const getServerAdmin = async (serverId: any ) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+  .from('servers')
+  .select('credentials, url, session_id')
+  .eq('id', serverId)
+  .single();
+
+  if (error) {
+    console.log(error.message);
+  }
+
+  return data ?? [];
+}
+
 export const updateServerRecord = async (items: any, serverId: any) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase

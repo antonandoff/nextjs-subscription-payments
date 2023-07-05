@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { beginTenantCreation, getTenantDetails } from './helperFunctions'
+import { beginTenantCreation, getTenantDetails, createTenantRecord } from './helperFunctions'
 
 export default function Page({ params }: { params: { subscription: string } }) {
   const [existingTenant, setExistingTenant] = useState(false);
@@ -22,13 +22,17 @@ export default function Page({ params }: { params: { subscription: string } }) {
     console.log(req)
   }
 
+  // const tenant = async (data:any) => {
+  //   const req = await createTenantRecord(data)
+  // }
+
   return (
     <>
       <h1 className="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-        Server: {params?.subscription}
+        Subscription: {params?.subscription}
       </h1>
       <p className="mt-2 text-sm text-gray-700 dark:text-white">
-        Main details
+        Proggress
       </p>
 
       {existingTenant &&
