@@ -19,7 +19,7 @@ export default async function Navbar() {
       </a>
       <div className="max-w-6xl px-6 mx-auto">
         <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
-          <div className="flex items-center flex-1">
+          <div className="flex items-center flex-2">
             <Link href="/" className={s.logo} aria-label="Logo">
               <Logo />
             </Link>
@@ -46,6 +46,10 @@ export default async function Navbar() {
 
                 <Link href="/managers" className={s.link}>
                   Managers
+                </Link>
+
+                <Link href="/branding" className={s.link}>
+                  Branding
                 </Link>
                 </>
               )}
