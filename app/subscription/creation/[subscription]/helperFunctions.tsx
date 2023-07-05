@@ -53,28 +53,6 @@ export async function beginTenantCreation (stripe_id: any) {
 }
 
 
-const getSubsriptionListItems = async (subscription_id: any) => {
-  try {
-    const data = {
-      subscription_id: subscription_id
-    }
-    const req = await fetch('/api/subscription-list-items', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    const res =  await req.json(); 
-    return res     
-  } catch (error) {
-    console.log(error);
-    return { error: "something went wrong"}
-  } 
-}
-
-
 export async function connectToPbxAndCreateNewTenant (server:any, tenant:any, plan:any, addOn:any, subscription:any){
   const data = {
     domain: tenant.domain,
@@ -84,45 +62,29 @@ export async function connectToPbxAndCreateNewTenant (server:any, tenant:any, pl
   }
 
   // old /api/pbx/tenant
-  const reqTenant = await createTenantRecord(data)
+  const reqTenant = await createTenantRecord(data, plan)
   const reqAccount = await connectToPbxAndCreateAccounts(tenant, server, subscription)
 
-  return ({createTenant: reqTenant, createAccounts: reqAccount})
+  return ({createTenant: reqTenant, createAccounts: reqAccount, data: data})
 }
 
 
-export const createTenantRecord = async (data:any) => {
-  var sessReq:any;
-
-  // tenantReq:any;
-
+export const createTenantRecord = async (data:any, plan:any) => {
   const tenantName = data.domain.name + "." + data.domain.host;  
   data.tenantName = tenantName;
   
   const serverAdminDetails:any = await getServerAdmin(data.server);
 
-  // if(!sessReq)
   const authData = {
     url: serverAdminDetails?.url,
     name: serverAdminDetails?.credentials.username,
     password: serverAdminDetails?.credentials.password
   }
 
-
-
   const req = await authenticateWithPbx(authData)
-
-  
-   
   const tenantReq = await createPbxTenant(serverAdminDetails?.url, data)
+  const tenantLimist = await setTenantLimits(serverAdminDetails?.url, data, plan)
 
-  // const stuff = {
-  //     ses: sessReq,
-  //     auth: authReq,
-  //     tenant: tenantReq,
-  // }
-
-  // return {data, stuff}
   return {authData, serverAdminDetails, req, tenantReq};
 }
 
@@ -174,6 +136,30 @@ export const createPbxTenant = async (url:string, data: any) => {
   const domainPayload = [data.tenantName];
 
   const req = await axiosRequest('post', domainAPI, JSON.stringify(domainPayload));
+  return req
+}
+
+export const setTenantLimits = async (url: string, data:any, plan: any) => {
+  const configAPI = url + "/rest/domain/" + data.tenantName + "/config";
+  const getValueByType = (type:any) => {
+    const item = plan.find((obj:any) => obj.type === type);
+    return item ? item.value : null;
+  };
+  const configPayload = {
+    "max_extensions": getValueByType('extension') || 0,
+    "max_attendants": getValueByType('auto_attendant') || 0,
+    "max_callingcards": getValueByType('calling_card') || 0,
+    "max_hunts": getValueByType('hunt_group') || 0,
+    "max_hoots": getValueByType('hoot') || 0,
+    "max_srvflags": getValueByType('service_flag') || 0,
+    "max_ivrnodes": getValueByType('ivr_node') || 0,
+    "max_alerts": getValueByType('max_allers') || 0,
+    "max_acds": getValueByType('acd') || 0,
+    "max_conferences": getValueByType('conference_room') || 0,
+    "max_colines": getValueByType('colines') || 0,
+    "max_calls": getValueByType('calls') || 0
+  }
+  const req = await axiosRequest('post', configAPI, JSON.stringify(configPayload));
   return req
 }
 
